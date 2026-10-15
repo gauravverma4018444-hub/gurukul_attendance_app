@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { reportAPI, attendanceAPI } from '../api/api';
+import React, { useState, useEffect, useCallback } from 'react';import { reportAPI, attendanceAPI } from '../api/api';
 import { toast } from 'react-toastify';
+import { useNavigate, useLocation } from 'react-router-dom';     // ← ADD useLocation
+import { useAutoRefresh } from '../utils/refresh';                // ← ADD THIS
 
 const Dashboard = () => {
   const [stats, setStats] = useState(null);
@@ -32,27 +32,45 @@ const Dashboard = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const loadData = async (isBackground = false) => {
-      fetchDashboard(isBackground);
-      fetchTodayAbsentees(isBackground);
-      fetchTrendData(isBackground);
-    };
+  const location = useLocation();
 
-    loadData(false);
+// Wrap data loading in useCallback so we can reuse it
+const loadAllData = useCallback(
+  (isBackground = false) => {
+    fetchDashboard(isBackground);
+    fetchTodayAbsentees(isBackground);
+    fetchTrendData(isBackground);
+  },
+  []
+);
 
-    const intervalId = setInterval(() => {
-      loadData(true);
-    }, 30000);
+// Initial load + background polling every 30s
+useEffect(() => {
+  loadAllData(false);
 
-    const handleResize = () => setWindowWidth(window.innerWidth);
-    window.addEventListener('resize', handleResize);
+  const intervalId = setInterval(() => {
+    loadAllData(true);
+  }, 30000);
 
-    return () => {
-      window.removeEventListener('resize', handleResize);
-      clearInterval(intervalId);
-    };
-  }, []);
+  const handleResize = () => setWindowWidth(window.innerWidth);
+  window.addEventListener('resize', handleResize);
+
+  return () => {
+    window.removeEventListener('resize', handleResize);
+    clearInterval(intervalId);
+  };
+}, [loadAllData]);
+
+// 🔥 Auto-refresh when user navigates back to Dashboard
+useEffect(() => {
+  loadAllData(true);
+}, [location.key, loadAllData]);
+
+// 🔥 Auto-refresh when any data mutation happens elsewhere
+useAutoRefresh(
+  () => loadAllData(true),
+  ['students', 'attendance', 'payments']
+);
 
   const fetchDashboard = async (isBackground) => {
     if (!isBackground) setLoading(true);

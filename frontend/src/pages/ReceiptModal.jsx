@@ -17,53 +17,136 @@ const INSTITUTE = {
 };
 
 const modalStyles = `
+/* ─── OVERLAY ─── */
 .rcpt-overlay {
   position: fixed; inset: 0; background: rgba(15,23,42,0.6); z-index: 10000;
-  display: flex; align-items: center; justify-content: center; padding: 20px;
+  display: flex; align-items: center; justify-content: center;
+  padding: 0;
   font-family: 'Inter', sans-serif;
 }
+
+/* ─── MODAL CONTAINER ─── */
 .rcpt-modal {
-  background: #fff; border-radius: 14px; width: 100%; max-width: 720px;
-  max-height: 92vh; overflow: hidden; display: flex; flex-direction: column;
+  background: #fff; border-radius: 0; width: 100%; height: 100%;
+  max-height: 100vh; max-width: 100vw;
+  overflow: hidden; display: flex; flex-direction: column;
   box-shadow: 0 30px 60px rgba(0,0,0,0.3);
 }
+
+@media (min-width: 640px) {
+  .rcpt-overlay { padding: 20px; }
+  .rcpt-modal {
+    border-radius: 14px;
+    max-width: 720px;
+    max-height: 92vh;
+    height: auto;
+    width: 100%;
+  }
+}
+
+/* ─── HEADER ─── */
 .rcpt-modal-header {
-  padding: 16px 22px; background: #4f46e5; color: white;
-  display: flex; justify-content: space-between; align-items: center; flex-shrink: 0;
+  padding: 14px 16px;
+  background: #4f46e5; color: white;
+  display: flex; justify-content: space-between; align-items: center;
+  flex-shrink: 0; gap: 10px;
 }
 .rcpt-modal-header h2 {
-  font-size: 17px; font-weight: 700; display: flex; align-items: center; gap: 10px; margin: 0;
+  font-size: 14px; font-weight: 700;
+  display: flex; align-items: center; gap: 8px; margin: 0;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  min-width: 0; flex: 1;
+}
+@media (min-width: 640px) {
+  .rcpt-modal-header { padding: 16px 22px; }
+  .rcpt-modal-header h2 { font-size: 17px; }
 }
 .rcpt-modal-header button {
   background: rgba(255,255,255,0.2); color: #fff; border: none;
-  width: 32px; height: 32px; border-radius: 8px; cursor: pointer;
+  width: 36px; height: 36px; min-width: 36px; border-radius: 8px; cursor: pointer;
   display: flex; align-items: center; justify-content: center;
+  font-size: 16px; flex-shrink: 0;
 }
-.rcpt-modal-body { padding: 20px; overflow-y: auto; flex: 1; }
+
+/* ─── BODY ─── */
+.rcpt-modal-body {
+  padding: 16px;
+  overflow-y: auto; flex: 1;
+  -webkit-overflow-scrolling: touch;
+}
+@media (min-width: 640px) {
+  .rcpt-modal-body { padding: 20px; }
+}
+
+/* ─── TABS ─── */
 .rcpt-tabs {
-  display: flex; gap: 6px; border-bottom: 1px solid #e5e7eb; margin-bottom: 16px;
+  display: flex; gap: 0;
+  border-bottom: 1px solid #e5e7eb; margin-bottom: 14px;
 }
 .rcpt-tab {
-  padding: 10px 16px; background: transparent; border: none;
-  border-bottom: 2px solid transparent; cursor: pointer; font-size: 13px;
-  font-weight: 600; color: #6b7280; display: flex; align-items: center; gap: 8px;
+  padding: 12px 14px;
+  background: transparent; border: none;
+  border-bottom: 2.5px solid transparent;
+  cursor: pointer; font-size: 13px;
+  font-weight: 600; color: #6b7280;
+  display: flex; align-items: center; gap: 6px;
+  flex: 1; justify-content: center;
+  white-space: nowrap;
+  -webkit-tap-highlight-color: transparent;
+  transition: color 0.2s, border-color 0.2s;
 }
-.rcpt-tab.active { color: #4f46e5; border-bottom-color: #4f46e5; }
+.rcpt-tab.active {
+  color: #4f46e5;
+  border-bottom-color: #4f46e5;
+}
+@media (min-width: 640px) {
+  .rcpt-tab {
+    flex: none;
+    padding: 10px 16px;
+    justify-content: flex-start;
+  }
+}
+
+/* ─── FORM GRID ─── */
 .rcpt-form-grid {
-  display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
 }
-.rcpt-field { display: flex; flex-direction: column; gap: 6px; }
+@media (min-width: 480px) {
+  .rcpt-form-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (min-width: 640px) {
+  .rcpt-form-grid {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 14px;
+  }
+}
+
+/* ─── FIELD ─── */
+.rcpt-field { display: flex; flex-direction: column; gap: 5px; }
 .rcpt-field label {
   font-size: 11px; font-weight: 600; color: #374151;
   text-transform: uppercase; letter-spacing: 0.3px;
 }
 .rcpt-field input, .rcpt-field select {
-  height: 38px; padding: 0 11px; border: 1px solid #d1d5db; border-radius: 8px;
-  font-size: 13px; outline: none; font-family: inherit; background: #fff;
+  height: 44px; padding: 0 12px;
+  border: 1px solid #d1d5db; border-radius: 10px;
+  font-size: 15px; outline: none; font-family: inherit; background: #fff;
   width: 100%; box-sizing: border-box;
+  -webkit-appearance: none;
+  appearance: none;
+}
+@media (min-width: 640px) {
+  .rcpt-field input, .rcpt-field select {
+    height: 38px; font-size: 13px; border-radius: 8px;
+  }
 }
 .rcpt-field input:focus, .rcpt-field select:focus {
-  border-color: #4f46e5; box-shadow: 0 0 0 3px rgba(79,70,229,0.1);
+  border-color: #4f46e5;
+  box-shadow: 0 0 0 3px rgba(79,70,229,0.1);
 }
 .rcpt-field input.rcpt-input-error {
   border-color: #dc2626 !important;
@@ -73,49 +156,113 @@ const modalStyles = `
 .rcpt-field input:disabled {
   background: #f3f4f6; color: #6b7280; cursor: not-allowed;
 }
+
+/* ─── HINTS ─── */
 .rcpt-field-hint {
-  font-size: 11px;
-  color: #6b7280;
-  margin-top: 2px;
-  line-height: 1.35;
+  font-size: 11px; color: #6b7280;
+  margin-top: 2px; line-height: 1.4;
 }
-.rcpt-field-hint.error {
-  color: #dc2626;
-  font-weight: 600;
-}
+.rcpt-field-hint.error { color: #dc2626; font-weight: 600; }
+
+/* ─── SECTION TITLE ─── */
 .rcpt-section-title {
   font-size: 13px; font-weight: 700; color: #1f2937;
-  margin: 18px 0 10px; padding-bottom: 6px; border-bottom: 1px solid #e5e7eb;
+  margin: 18px 0 10px; padding-bottom: 6px;
+  border-bottom: 1px solid #e5e7eb;
 }
+
+/* ─── FOOTER ─── */
 .rcpt-footer {
-  padding: 14px 22px; border-top: 1px solid #e5e7eb;
-  display: flex; justify-content: flex-end; gap: 10px; background: #f9fafb; flex-shrink: 0;
+  padding: 12px 16px;
+  border-top: 1px solid #e5e7eb;
+  display: flex; justify-content: stretch; gap: 10px;
+  background: #f9fafb; flex-shrink: 0;
+  flex-direction: column;
 }
+@media (min-width: 480px) {
+  .rcpt-footer {
+    flex-direction: row;
+    justify-content: flex-end;
+    padding: 14px 22px;
+  }
+}
+
+/* ─── BUTTONS ─── */
 .rcpt-btn {
-  padding: 10px 18px; border-radius: 8px; font-size: 13px; font-weight: 600;
-  border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 8px;
+  padding: 12px 18px; border-radius: 10px; font-size: 14px; font-weight: 600;
+  border: none; cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  -webkit-tap-highlight-color: transparent;
+  width: 100%;
+  min-height: 48px;
+}
+@media (min-width: 480px) {
+  .rcpt-btn {
+    width: auto;
+    min-height: auto;
+    padding: 10px 18px;
+    font-size: 13px;
+    border-radius: 8px;
+  }
 }
 .rcpt-btn-cancel { background: #fff; color: #374151; border: 1px solid #d1d5db; }
 .rcpt-btn-primary { background: #4f46e5; color: #fff; }
 .rcpt-btn-success { background: #059669; color: #fff; }
 .rcpt-btn:disabled { opacity: 0.6; cursor: not-allowed; }
-.rcpt-history-list { display: flex; flex-direction: column; gap: 8px; }
+.rcpt-btn:active:not(:disabled) { transform: scale(0.98); }
+
+/* ─── HISTORY ─── */
+.rcpt-history-list { display: flex; flex-direction: column; gap: 10px; }
 .rcpt-history-item {
-  padding: 12px; background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px;
-  display: flex; justify-content: space-between; align-items: center; gap: 10px;
+  padding: 14px; background: #f9fafb;
+  border: 1px solid #e5e7eb; border-radius: 10px;
+  display: flex; flex-direction: column; gap: 10px;
 }
+@media (min-width: 480px) {
+  .rcpt-history-item {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px;
+    border-radius: 8px;
+  }
+}
+.rcpt-history-item .rcpt-btn {
+  width: 100%;
+}
+@media (min-width: 480px) {
+  .rcpt-history-item .rcpt-btn {
+    width: auto;
+    min-width: 110px;
+  }
+}
+
+/* ─── INFO / ERROR BOXES ─── */
 .rcpt-error-box {
-  background: #fef2f2; color: #b91c1c; padding: 10px 12px; border-radius: 8px;
-  margin-bottom: 14px; font-size: 12px; border: 1px solid #fecaca;
+  background: #fef2f2; color: #b91c1c;
+  padding: 12px 14px; border-radius: 10px;
+  margin-bottom: 14px; font-size: 13px;
+  border: 1px solid #fecaca;
+  line-height: 1.5;
 }
 .rcpt-info-badge {
-  background: #eff6ff; color: #1d4ed8; padding: 10px 14px; border-radius: 8px;
-  font-size: 12px; margin-bottom: 14px; border: 1px solid #bfdbfe;
-  display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+  background: #eff6ff; color: #1d4ed8;
+  padding: 12px 14px; border-radius: 10px;
+  font-size: 12px; margin-bottom: 14px;
+  border: 1px solid #bfdbfe;
+  display: flex; flex-direction: column; gap: 6px;
+}
+@media (min-width: 480px) {
+  .rcpt-info-badge {
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
 }
 .rcpt-info-badge strong { font-weight: 700; }
 
-/* PRINT */
+/* ─── PRINT ─── */
 .rcpt-print-area { display: none; }
 @media print {
   body * { visibility: hidden !important; }
@@ -264,17 +411,16 @@ const ReceiptModal = ({
     setError("");
   }, [row?._id]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // ✅ FIXED: Use VITE_API_URL in production, fallback to proxy in dev
   const API_BASE = import.meta.env.VITE_API_URL || 'https://gurukul-attendance-app-2.onrender.com/api';
 
-const api = useMemo(
-  () =>
-    axios.create({
-      baseURL: `${API_BASE}/payments`,
-      headers: { Authorization: `Bearer ${token}` },
-    }),
-  [token]
-);
+  const api = useMemo(
+    () =>
+      axios.create({
+        baseURL: `${API_BASE}/payments`,
+        headers: { Authorization: `Bearer ${token}` },
+      }),
+    [token, API_BASE]
+  );
 
   const loadHistory = useCallback(async () => {
     if (!row?._id) return;
@@ -532,7 +678,7 @@ const api = useMemo(
         <div className="rcpt-modal" onClick={(e) => e.stopPropagation()}>
           <div className="rcpt-modal-header">
             <h2>
-              <FaReceipt /> Payment Receipt — {form.name || "Student"}
+              <FaReceipt /> Payment — {form.name || "Student"}
             </h2>
             <button type="button" onClick={onClose} aria-label="Close">
               <FaTimes />
@@ -576,11 +722,11 @@ const api = useMemo(
                     </strong>
                   </span>
                   <span>
-                    Already Received:{" "}
+                    Received:{" "}
                     <strong>₹ {paidTillDate.toLocaleString("en-IN")}</strong>
                   </span>
                   <span>
-                    Remaining after this:{" "}
+                    Remaining:{" "}
                     <strong>₹ {remainingPreview.toLocaleString("en-IN")}</strong>
                   </span>
                 </div>
@@ -627,6 +773,8 @@ const api = useMemo(
                       value={form.parentPhone}
                       onChange={(e) => updateField("parentPhone", e.target.value)}
                       placeholder="Parent phone number"
+                      type="tel"
+                      inputMode="tel"
                     />
                   </div>
                 </div>
@@ -639,6 +787,7 @@ const api = useMemo(
                       type="number"
                       min="0"
                       step="0.01"
+                      inputMode="decimal"
                       max={maxPayable !== null ? maxPayable : undefined}
                       value={form.amount}
                       disabled={isFullyPaid}
@@ -669,18 +818,13 @@ const api = useMemo(
                         </span>
                       ) : isOverLimit ? (
                         <span className="rcpt-field-hint error">
-                          Amount exceeds remaining balance. Max allowed: ₹
-                          {maxPayable.toLocaleString("en-IN")}
+                          Exceeds balance. Max: ₹{maxPayable.toLocaleString("en-IN")}
                         </span>
                       ) : (
                         <span className="rcpt-field-hint">
-                          Max allowed: ₹{maxPayable.toLocaleString("en-IN")}
+                          Max: ₹{maxPayable.toLocaleString("en-IN")}
                           {isAmountPositive && (
-                            <>
-                              {" "}
-                              · After pay, remaining: ₹
-                              {remainingPreview.toLocaleString("en-IN")}
-                            </>
+                            <> · After: ₹{remainingPreview.toLocaleString("en-IN")}</>
                           )}
                         </span>
                       )
@@ -725,14 +869,16 @@ const api = useMemo(
                 ) : (
                   [...history].reverse().map((r) => (
                     <div key={r._id || r.receiptNo} className="rcpt-history-item">
-                      <div style={{ fontSize: 12, color: "#374151" }}>
-                        <strong style={{ color: "#111827", fontSize: 13 }}>
+                      <div style={{ fontSize: 13, color: "#374151", lineHeight: 1.5 }}>
+                        <strong style={{ color: "#111827", fontSize: 14 }}>
                           {r.receiptNo}
                         </strong>{" "}
                         — ₹{Number(r.amount).toFixed(2)}
                         <br />
-                        {r.feeHead || "Amount Paid"} • {r.paymentMode} •{" "}
-                        {formatDate(r.paymentDate)}
+                        <span style={{ fontSize: 12, color: "#6b7280" }}>
+                          {r.feeHead || "Amount Paid"} • {r.paymentMode} •{" "}
+                          {formatDate(r.paymentDate)}
+                        </span>
                       </div>
                       <button
                         type="button"

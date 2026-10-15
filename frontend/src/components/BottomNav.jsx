@@ -5,11 +5,11 @@ const BottomNav = () => {
   const location = useLocation();
 
   const items = [
-    { to: '/',          icon: '📊', label: 'Home' },
-    { to: '/students',  icon: '👨‍🎓', label: 'Students' },
-    { to: '/attendance',icon: '✅', label: 'Attend' },
-    { to: '/payments',  icon: '💰', label: 'Payment' },
-    { to: '/reports',   icon: '📥', label: 'Reports' },
+    { to: '/',          icon: '', label: 'Home' },
+    { to: '/students',  icon: '', label: 'Students' },
+    { to: '/attendance',icon: '', label: 'Attend' },
+    { to: '/payments',  icon: '', label: 'Payment' },
+    { to: '/reports',   icon: '', label: 'Reports' },
   ];
 
   // Don't show bottom nav on login page

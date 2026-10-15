@@ -1,7 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { attendanceAPI, studentAPI } from '../api/api';
 import { toast } from 'react-toastify';
+import { triggerRefresh } from '../utils/refresh';
 
+// After successfully marking attendance:
+const handleMarkAttendance = async () => {
+  try {
+    await attendanceAPI.mark(data);
+    toast.success('Attendance marked');
+    triggerRefresh('attendance');  // ← ADD THIS LINE
+  } catch (err) {
+    toast.error('Failed');
+  }
+};
 const AttendanceView = () => {
   const [classes, setClasses] = useState([]);
   const [selectedClass, setSelectedClass] = useState('');
