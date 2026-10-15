@@ -1,0 +1,82 @@
+/* ─── Reset / base ───────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body, #root {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+  width: 100%;
+}
+
+body {
+  font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+  background-color: #f8fafc !important; /* Clean light slate background */
+  color: #0f172a;                       /* Dark slate text */
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ─── Global network canvas (Subtle for Light Mode) ──────── */
+.network-canvas-global {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.65;
+  filter: contrast(1.1);
+}
+
+/* ─── Light Edge Vignette (Soft subtle corner depth) ─────── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  /* Soft transition towards light gray at the outer edges */
+  background: radial-gradient(ellipse at center, transparent 50%, rgba(203, 213, 225, 0.4) 100%);
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Top Glow (Soft Indigo/Blue ambient light) ───────────────── */
+.network-glow-global {
+  position: fixed;
+  top: -200px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 1000px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.08) 0%, transparent 70%);
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* ─── Force Main Dashboard Wrappers to be Transparent ───── */
+.app-content,
+main,
+.dashboard-container,
+.main-content {
+  background: transparent !important;
+  position: relative;
+  z-index: 1;
+}
+
+/* ─── Gurukul text-logo watermark (Light Mode Outline) ───── */
+body::after {
+  content: 'GURUKUL';
+  position: fixed;
+  top: 50%;
+  left: 55%; /* slightly shifted right to avoid sidebar */
+  transform: translate(-50%, -50%) rotate(-25deg);
+  font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+  font-size: 140px;
+  font-weight: 900;
+  letter-spacing: 20px;
+  color: transparent;
+  /* Dark subtle outline that works cleanly on light backgrounds */
+  -webkit-text-stroke: 1.5px rgba(15, 23, 42, 0.035);
+  z-index: 0;
+  pointer-events: none;
+  white-space: nowrap;
+  user-select: none;
+}
