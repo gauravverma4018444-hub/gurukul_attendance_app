@@ -13,7 +13,10 @@ const FIXED_STATUS_COLUMN = {
 };
 
 const getApi = (token) => axios.create({
-  baseURL: "/api/payments",
+  // ✅ Uses VITE_API_URL in production (Vercel), falls back to proxy in local dev
+  baseURL: import.meta.env.VITE_API_URL 
+    ? `${import.meta.env.VITE_API_URL}/payments` 
+    : '/api/payments',
   headers: {
     Authorization: `Bearer ${token}`,
   },
