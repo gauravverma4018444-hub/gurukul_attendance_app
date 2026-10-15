@@ -118,7 +118,10 @@ const validateCellValue = (column, value) => {
 const formatRow = (row) => ({
   _id: row._id,
   student: row.student,
-  data: Object.fromEntries(row.data || []),
+  data:
+    row.data instanceof Map
+      ? Object.fromEntries(row.data)
+      : row.data || {},
   rowColor: row.rowColor || "none",
   updatedAt: row.updatedAt,
 });
@@ -330,7 +333,17 @@ router.get("/master", protect, async (req, res) => {
     });
   }
 });
-
+router.get("/academic-years", protect, async (req, res) => {
+  try {
+    const years = await PaymentSheet.distinct("academicYear");
+    res.json({
+      success: true,
+      data: years.sort().reverse(),
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
 /**
  * GET /api/payments/sheets
  *
