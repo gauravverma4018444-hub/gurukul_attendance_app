@@ -264,10 +264,13 @@ const ReceiptModal = ({
     setError("");
   }, [row?._id]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // ✅ FIXED: Use VITE_API_URL in production, fallback to proxy in dev
   const api = useMemo(
     () =>
       axios.create({
-        baseURL: "/api/payments",
+        baseURL: import.meta.env.VITE_API_URL
+          ? `${import.meta.env.VITE_API_URL}/payments`
+          : "/api/payments",
         headers: { Authorization: `Bearer ${token}` },
       }),
     [token]
@@ -303,10 +306,8 @@ const ReceiptModal = ({
     0
   );
 
-  // Prefer sheet Received if present, else sum of receipt history
   const paidTillDate = sheetReceived > 0 ? sheetReceived : historyPaid;
 
-  // Max the user is allowed to pay right now
   const maxPayable =
     sheetTotalFees > 0 ? Math.max(0, sheetTotalFees - paidTillDate) : null;
 
@@ -322,7 +323,6 @@ const ReceiptModal = ({
       ? Math.max(0, sheetTotalFees - paidTillDate - (isAmountPositive ? amountNum : 0))
       : 0;
 
-  // Can submit?
   const canGenerate =
     !saving &&
     !loading &&
@@ -350,7 +350,6 @@ const ReceiptModal = ({
     const remainingNow =
       totalFee > 0 ? Math.max(0, totalFee - prevPaid) : null;
 
-    // Hard block overpayment
     if (remainingNow !== null && amt > remainingNow + 0.0001) {
       setError(
         remainingNow === 0
@@ -634,7 +633,6 @@ const ReceiptModal = ({
 
                 <div className="rcpt-section-title">Payment</div>
                 <div className="rcpt-form-grid">
-                  {/* ========== VALIDATED AMOUNT INPUT ========== */}
                   <div className="rcpt-field">
                     <label>Paying Amount (₹) *</label>
                     <input
@@ -647,7 +645,6 @@ const ReceiptModal = ({
                       className={isOverLimit ? "rcpt-input-error" : ""}
                       onChange={(e) => {
                         const val = e.target.value;
-                        // Allow empty while typing; block absurd negatives
                         if (val === "") {
                           updateField("amount", "");
                           return;
@@ -657,7 +654,6 @@ const ReceiptModal = ({
                         updateField("amount", val);
                       }}
                       onBlur={() => {
-                        // On blur, if over max, clamp to maxPayable
                         if (maxPayable !== null && isAmountPositive && amountNum > maxPayable) {
                           updateField("amount", String(maxPayable));
                         }
@@ -666,7 +662,6 @@ const ReceiptModal = ({
                       autoFocus
                     />
 
-                    {/* Live validation messages */}
                     {sheetTotalFees > 0 ? (
                       isFullyPaid ? (
                         <span className="rcpt-field-hint error">

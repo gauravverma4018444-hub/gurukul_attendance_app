@@ -33,7 +33,6 @@ const styles = `
   flex-wrap: wrap;
 }
 
-/* ─── Custom Session Dropdown Container ─── */
 .session-dropdown-container {
   position: relative;
   user-select: none;
@@ -81,7 +80,6 @@ const styles = `
   transform: rotate(180deg);
 }
 
-/* ─── Floating Menu ─── */
 .session-menu {
   position: absolute;
   top: calc(100% + 6px);
@@ -101,7 +99,6 @@ const styles = `
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* ─── Add Custom Input Box ─── */
 .session-custom-input-box {
   display: flex;
   align-items: center;
@@ -148,7 +145,6 @@ const styles = `
   background: #4338ca;
 }
 
-/* ─── Session List ─── */
 .session-list-header {
   font-size: 11px;
   font-weight: 700;
@@ -227,7 +223,6 @@ const styles = `
 `;
 
 const PaymentPage = () => {
-  // Current calendar default year
   const currentYear = new Date().getFullYear();
   const currentMonth = new Date().getMonth();
   const defaultYear =
@@ -239,7 +234,6 @@ const PaymentPage = () => {
   const [customInput, setCustomInput] = useState("");
   const [isOpen, setIsOpen] = useState(false);
 
-  // Store existing created sessions (synced with localStorage & DB)
   const [existingSessions, setExistingSessions] = useState(() => {
     const saved = localStorage.getItem("payment_sessions_list");
     if (saved) {
@@ -259,10 +253,13 @@ const PaymentPage = () => {
   const dropdownRef = useRef(null);
   const token = localStorage.getItem("token");
 
+  // ✅ FIXED: Use VITE_API_URL in production, fallback to proxy in dev
   const api = useMemo(
     () =>
       axios.create({
-        baseURL: "/api/payments",
+        baseURL: import.meta.env.VITE_API_URL
+          ? `${import.meta.env.VITE_API_URL}/payments`
+          : "/api/payments",
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -270,7 +267,6 @@ const PaymentPage = () => {
     [token]
   );
 
-  // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
@@ -281,12 +277,10 @@ const PaymentPage = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Save sessions list to localStorage whenever it changes
   useEffect(() => {
     localStorage.setItem("payment_sessions_list", JSON.stringify(existingSessions));
   }, [existingSessions]);
 
-  // Fetch created sessions from DB if endpoint exists
   useEffect(() => {
     const fetchCreatedYears = async () => {
       try {
@@ -308,7 +302,6 @@ const PaymentPage = () => {
     fetchCreatedYears();
   }, [api]);
 
-  // Handle switching to a selected session
   const selectSession = (year) => {
     if (year === academicYear) {
       setIsOpen(false);
@@ -332,7 +325,6 @@ const PaymentPage = () => {
     setIsOpen(false);
   };
 
-  // Handle creating & switching to a typed custom session
   const handleAddCustomSession = () => {
     const trimmed = customInput.trim();
     if (!trimmed) return;
@@ -349,7 +341,6 @@ const PaymentPage = () => {
       return;
     }
 
-    // Add to list if new
     setExistingSessions((prev) =>
       Array.from(new Set([trimmed, ...prev])).sort().reverse()
     );
@@ -366,8 +357,6 @@ const PaymentPage = () => {
 
       <div className="payment-page">
         <div className="payment-page-header">
-
-          {/* ─── Interactive Session Dropdown + Custom Input ─── */}
           <div className="session-dropdown-container" ref={dropdownRef}>
             <button
               type="button"
@@ -381,7 +370,6 @@ const PaymentPage = () => {
 
             {isOpen && (
               <div className="session-menu">
-                {/* Custom Year Input Form */}
                 <div className="session-custom-input-box">
                   <input
                     type="text"
@@ -402,7 +390,6 @@ const PaymentPage = () => {
                   </button>
                 </div>
 
-                {/* List of Existing / Created Sessions */}
                 <div className="session-list-header">
                   <FaHistory /> Existing Sessions
                 </div>
