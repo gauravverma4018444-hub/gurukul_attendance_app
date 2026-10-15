@@ -265,16 +265,16 @@ const ReceiptModal = ({
   }, [row?._id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // ✅ FIXED: Use VITE_API_URL in production, fallback to proxy in dev
-  const api = useMemo(
-    () =>
-      axios.create({
-        baseURL: import.meta.env.VITE_API_URL
-          ? `${import.meta.env.VITE_API_URL}/payments`
-          : "/api/payments",
-        headers: { Authorization: `Bearer ${token}` },
-      }),
-    [token]
-  );
+  const API_BASE = import.meta.env.VITE_API_URL || 'https://gurukul-attendance-app-2.onrender.com/api';
+
+const api = useMemo(
+  () =>
+    axios.create({
+      baseURL: `${API_BASE}/payments`,
+      headers: { Authorization: `Bearer ${token}` },
+    }),
+  [token]
+);
 
   const loadHistory = useCallback(async () => {
     if (!row?._id) return;

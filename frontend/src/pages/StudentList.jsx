@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
-import axios from 'axios';
+import api from '../api/api';  // ← adjust to your actual relative path to api.js
 import {
   fetchClasses,
   fetchStudents,
@@ -117,9 +117,8 @@ const StudentList = () => {
       try {
         const token = localStorage.getItem('token');
 
-        const res = await axios.get(`/api/attendance/student/${vizStudent._id}`, {
+        const res = await api.get(`/attendance/student/${vizStudent._id}`, {
           params: { month: vizMonth, year: vizYear },
-          headers: { Authorization: `Bearer ${token}` }
         });
 
         if (res.data?.success && res.data?.data?.records) {
@@ -175,7 +174,7 @@ const StudentList = () => {
       await Promise.all(
         classesToFetch.map(async (cls) => {
           try {
-            const res = await axios.get('/api/attendance/monthly-grid', {
+            const res = await api.get('/attendance/monthly-grid', {
               params: {
                 className: cls,
                 section: sec || undefined,
