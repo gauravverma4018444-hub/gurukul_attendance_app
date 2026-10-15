@@ -213,4 +213,16 @@ router.get("/export-data/:academicYear", auth, async (req, res) => {
   }
 });
 
+router.get("/academic-years", protect, async (req, res) => {
+  try {
+    const years = await PaymentSheet.distinct("academicYear");
+    res.json({
+      success: true,
+      data: years.sort().reverse(),
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
 module.exports = router;
