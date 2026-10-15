@@ -1,21 +1,21 @@
 {
-  "short_name": "Gurukul",
+  "short_name": "Gurukul AMS",
   "name": "Gurukul AMS",
   "icons": [
     {
-      "src": "/android-chrome-192x192.png",
+      "src": "/mortarboard.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/android-chrome-512x512.png",
+      "src": "/mortarboard.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/android-chrome-512x512.png",
+      "src": "/mortarboard.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
