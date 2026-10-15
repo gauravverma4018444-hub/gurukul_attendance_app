@@ -13,10 +13,12 @@ const FIXED_STATUS_COLUMN = {
 };
 
 const getApi = (token) => axios.create({
-  // ✅ Uses VITE_API_URL in production (Vercel), falls back to proxy in local dev
-  baseURL: import.meta.env.VITE_API_URL 
-    ? `${import.meta.env.VITE_API_URL}/payments` 
-    : '/api/payments',
+  // Bulletproof: env var > hardcoded Render URL > local proxy
+  baseURL: import.meta.env.VITE_API_URL
+    ? `${import.meta.env.VITE_API_URL}/payments`
+    : import.meta.env.PROD
+      ? 'https://gurukul-attendance-app-2.onrender.com/api/payments'
+      : '/api/payments',
   headers: {
     Authorization: `Bearer ${token}`,
   },
