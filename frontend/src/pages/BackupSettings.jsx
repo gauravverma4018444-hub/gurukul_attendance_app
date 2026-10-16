@@ -133,7 +133,7 @@ const BackupSettings = ({ token }) => {
     formData.append("backupFile", restoreFile);
 
     try {
-      const response = await post("https://gurukul-attendance-app-2.onrender.com9425336363/api/backup/restore", formData, {
+      const response = await axios.post("https://gurukul-attendance-app-2.onrender.com9425336363/api/backup/restore", formData, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "multipart/form-data",
