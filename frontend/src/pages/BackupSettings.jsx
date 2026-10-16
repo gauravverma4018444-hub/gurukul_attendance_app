@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import api from "./api/api";  // Your centralized instance
 import { toast } from "react-toastify";
 import { 
   FaDatabase, 
@@ -85,7 +86,7 @@ const BackupSettings = ({ token }) => {
     setIsBackingUp(true);
     try {
       // NOTE: Update baseURL according to your setup
-      const response = await axios.get("https://gurukul-attendance-app-2.onrender.com/api/backup/generate", {
+      const response = await axios.get("/backup/generate", {
         headers: { Authorization: `Bearer ${token}` },
         responseType: "blob", // Important for receiving files
       });
@@ -133,7 +134,7 @@ const BackupSettings = ({ token }) => {
     formData.append("backupFile", restoreFile);
 
     try {
-      const response = await axios.post("https://gurukul-attendance-app-2.onrender.com/api/backup/restore", formData, {
+      const response = await api.post("/backup/restore", formData, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "multipart/form-data",
