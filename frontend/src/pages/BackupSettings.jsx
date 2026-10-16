@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
-import api from "../api/api";  // Your centralized instance
+import api from "../api/api";  // ✅ Your centralized instance
 import { toast } from "react-toastify";
 import { 
   FaDatabase, 
@@ -65,7 +64,7 @@ const styles = `
 .btn:disabled { opacity: 0.6; cursor: not-allowed; }
 `;
 
-const BackupSettings = ({ token }) => {
+const BackupSettings = () => {  // ✅ No token prop needed
   const [isBackingUp, setIsBackingUp] = useState(false);
   const [isRestoring, setIsRestoring] = useState(false);
   const [lastBackup, setLastBackup] = useState(null);
@@ -74,7 +73,6 @@ const BackupSettings = ({ token }) => {
   const [confirmText, setConfirmText] = useState("");
 
   useEffect(() => {
-    // Check local storage for the last downloaded backup date
     const last = localStorage.getItem("lastBackupDate");
     if (last) setLastBackup(last);
   }, []);
@@ -85,13 +83,10 @@ const BackupSettings = ({ token }) => {
   const handleBackup = async () => {
     setIsBackingUp(true);
     try {
-      // NOTE: Update baseURL according to your setup
       const response = await api.get("/backup/generate", {
-        headers: { Authorization: `Bearer ${token}` },
-        responseType: "blob", // Important for receiving files
+        responseType: "blob",  // ✅ That's all - interceptor adds token automatically
       });
 
-      // Create download link
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement("a");
       link.href = url;
@@ -102,15 +97,14 @@ const BackupSettings = ({ token }) => {
 
       toast.success("Database Backup Downloaded!");
       
-      // Update last backup time
       const now = new Date().toLocaleString();
       localStorage.setItem("lastBackupDate", now);
-      localStorage.setItem("lastBackupPromptTime", Date.now().toString()); // Resets the 24h prompt
+      localStorage.setItem("lastBackupPromptTime", Date.now().toString());
       setLastBackup(now);
 
     } catch (error) {
       console.error(error);
-      toast.error("Failed to generate backup.");
+      toast.error(error.response?.data?.message || "Failed to generate backup.");
     } finally {
       setIsBackingUp(false);
     }
@@ -135,17 +129,13 @@ const BackupSettings = ({ token }) => {
 
     try {
       const response = await api.post("/backup/restore", formData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "multipart/form-data",
-        },
+        // ✅ No headers needed - interceptor adds auth, axios sets Content-Type for FormData
       });
 
       toast.success(response.data.message || "Database restored successfully!");
       setRestoreFile(null);
       setConfirmText("");
       
-      // Force reload to fetch the restored data cleanly
       setTimeout(() => window.location.reload(), 2000);
 
     } catch (error) {
