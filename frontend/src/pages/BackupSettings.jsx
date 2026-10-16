@@ -86,7 +86,7 @@ const BackupSettings = ({ token }) => {
     setIsBackingUp(true);
     try {
       // NOTE: Update baseURL according to your setup
-      const response = await axios.get("/backup/generate", {
+      const response = await api.get("/backup/generate", {
         headers: { Authorization: `Bearer ${token}` },
         responseType: "blob", // Important for receiving files
       });
