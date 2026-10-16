@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import api from "./api/api";  // Your centralized instance
+import api from "../api/api";  // Your centralized instance
 import { toast } from "react-toastify";
 import { 
   FaDatabase, 
