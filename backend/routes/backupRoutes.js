@@ -5,9 +5,9 @@ const path = require('path');
 const fs = require('fs');
 const multer = require('multer');
 
-// ✅ LINUX PATHS (works on Render)
-const MONGODUMP_PATH = 'mongodump';      // No .exe, system path
-const MONGORESTORE_PATH = 'mongorestore'; // No .exe, system path
+// ✅ LINUX PATHS (installed via Render build command)
+const MONGODUMP_PATH = './mongodb-tools/bin/mongodump';
+const MONGORESTORE_PATH = './mongodb-tools/bin/mongorestore';
 
 const TEMP_DIR = path.join(__dirname, '../temp');
 if (!fs.existsSync(TEMP_DIR)) {
@@ -16,7 +16,6 @@ if (!fs.existsSync(TEMP_DIR)) {
 
 const upload = multer({ dest: TEMP_DIR });
 
-// Helper to get Mongo URI from .env
 const getMongoURI = () => {
   return process.env.MONGO_URI || process.env.MONGODB_URI;
 };
@@ -27,11 +26,10 @@ const getMongoURI = () => {
 router.get('/generate', (req, res) => {
   const MONGO_URI = getMongoURI();
 
-  // 1. Verify URI exists
   if (!MONGO_URI) {
-    console.error('❌ Backup Error: MONGO_URI is undefined in .env');
+    console.error('❌ Backup Error: MONGO_URI is undefined');
     return res.status(500).json({ 
-      message: 'Database connection string (MONGO_URI / MONGODB_URI) is missing in server environment variables' 
+      message: 'Database connection string missing in environment variables' 
     });
   }
 
@@ -45,9 +43,7 @@ router.get('/generate', (req, res) => {
   ];
 
   console.log('🔄 Starting backup generation...');
-  console.log('📦 Output file:', filePath);
 
-  // Using execFile (works on Linux)
   execFile(MONGODUMP_PATH, args, (error, stdout, stderr) => {
     if (error) {
       console.error(`❌ Backup Error: ${error.message}`);
@@ -63,13 +59,11 @@ router.get('/generate', (req, res) => {
 
     console.log('✅ Backup generated successfully');
     
-    // Verify file exists before download
     if (!fs.existsSync(filePath)) {
       console.error('❌ Backup file not found after mongodump completed');
       return res.status(500).json({ message: "Backup file was not created." });
     }
 
-    // Send file to client
     res.setHeader('Content-Type', 'application/gzip');
     res.setHeader('Content-Disposition', `attachment; filename="${fileName}"`);
     
@@ -105,23 +99,21 @@ router.post('/restore', upload.single('backupFile'), (req, res) => {
   if (!MONGO_URI) {
     console.error('❌ Restore Error: MONGO_URI is undefined');
     if (fs.existsSync(req.file.path)) fs.unlinkSync(req.file.path);
-    return res.status(500).json({ message: "Database connection string missing in server environment variables" });
+    return res.status(500).json({ message: "Database connection string missing in environment variables" });
   }
 
   const filePath = req.file.path;
   
   console.log('🔄 Starting database restore...');
-  console.log('📦 Backup file:', filePath);
 
   const args = [
     `--uri=${MONGO_URI}`,
     `--archive=${filePath}`,
     '--gzip',
-    '--drop'  // ⚠️ DROPS ALL EXISTING DATA BEFORE RESTORE
+    '--drop'
   ];
 
   execFile(MONGORESTORE_PATH, args, (error, stdout, stderr) => {
-    // Delete temp uploaded file
     if (fs.existsSync(filePath)) {
       fs.unlinkSync(filePath);
       console.log('🗑️ Temp backup file deleted');
