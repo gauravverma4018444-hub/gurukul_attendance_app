@@ -85,7 +85,7 @@ const BackupSettings = ({ token }) => {
     setIsBackingUp(true);
     try {
       // NOTE: Update baseURL according to your setup
-      const response = await axios.get("http://localhost:5000/api/backup/generate", {
+      const response = await axios.get("https://gurukul-attendance-app-2.onrender.com9425336363/api/backup/generate", {
         headers: { Authorization: `Bearer ${token}` },
         responseType: "blob", // Important for receiving files
       });
@@ -133,7 +133,7 @@ const BackupSettings = ({ token }) => {
     formData.append("backupFile", restoreFile);
 
     try {
-      const response = await axios.post("http://localhost:5000/api/backup/restore", formData, {
+      const response = await post("https://gurukul-attendance-app-2.onrender.com9425336363/api/backup/restore", formData, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "multipart/form-data",
